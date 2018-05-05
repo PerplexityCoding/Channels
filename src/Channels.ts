@@ -2,9 +2,8 @@ import {Channel} from "./Channel";
 import {ChannelCallback} from "./index.d";
 
 export default class Channels {
-
     private static channels: Channel[] = [];
-    private static globalChannel = new Channel();
+    private static globalChannel = new Channel(Channels, '__GLOBAL');
 
     public static on(message: string, cb: ChannelCallback) {
         return Channels.globalChannel.on(message, cb);
@@ -23,7 +22,7 @@ export default class Channels {
 
         let channel = channels[channelName];
         if (! channel) {
-            channel = new Channel();
+            channel = new Channel(Channels, channelName);
             channels[channelName] = channel;
         }
 

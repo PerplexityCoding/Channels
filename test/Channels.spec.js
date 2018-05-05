@@ -1,4 +1,4 @@
-let Channels = require('../dist/bundle-test');
+const Channels = require('../dist/bundle-test');
 
 describe('test channel', () => {
 
@@ -20,7 +20,7 @@ describe('test channel', () => {
         });
         expect(handlerId).toBeDefined();
 
-        let removed = channel.off(handlerId);
+        const removed = channel.off(handlerId);
         expect(removed).toBe(true);
 
         const messageSent = channel.emit('my-message', 'hello');
@@ -50,33 +50,45 @@ describe('test channel', () => {
     });
 
     test('custom channel remove', () => {
-        let channel1 = Channels.get('my-custom-channel');
-        let channel2 = Channels.get('my-custom-channel');
+        const channel1 = Channels.get('my-custom-channel');
+        const channel2 = Channels.get('my-custom-channel');
 
         expect(channel2).toBe(channel1);
 
-        let removed = Channels.remove('my-custom-channel');
+        const removed = Channels.remove('my-custom-channel');
         expect(removed).toBe(true);
 
-        let channel3 = Channels.get('my-custom-channel');
+        const channel3 = Channels.get('my-custom-channel');
 
         expect(channel3).not.toBe(channel1);
     });
 
+    test('custom channel remove with helper method', () => {
+        const channel1 = Channels.get('my-custom-channel');
+        const channel2 = Channels.get('my-custom-channel');
+
+        expect(channel2).toBe(channel1);
+
+        const removed = channel1.remove();
+        expect(removed).toBe(true);
+
+        const channel3 = Channels.get('my-custom-channel');
+        expect(channel3).not.toBe(channel1);
+    });
+
     test('global channel remove wrong channel', () => {
-        let removed = Channels.remove('my-other-channel');
+        const removed = Channels.remove('my-other-channel');
         expect(removed).toBe(false);
     });
 
     test('global channel emit message, no listeners', () => {
-        let messageSent = Channels.emit('my-other-channel');
+        const messageSent = Channels.emit('my-other-channel');
         expect(messageSent).toBe(false);
     });
 
     test('global channel remove inexistant handlers', () => {
-        let removed = Channels.off(1);
+        const removed = Channels.off(1);
         expect(removed).toBe(false);
     });
-
 
 });

@@ -1,7 +1,9 @@
 'use strict';
 
 var Channel = /** @class */ (function () {
-    function Channel() {
+    function Channel(Channels, channelName) {
+        this.Channels = Channels;
+        this.name = channelName;
     }
     Channel.prototype.on = function (message, cb) {
         var handler = {
@@ -49,6 +51,9 @@ var Channel = /** @class */ (function () {
         }
         return false;
     };
+    Channel.prototype.remove = function () {
+        return this.Channels.remove(this.name);
+    };
     Channel.handlerIdCpt = 0;
     Channel.handlersById = {};
     Channel.handlersByMessage = {};
@@ -71,7 +76,7 @@ var Channels = /** @class */ (function () {
         var channels = Channels.channels;
         var channel = channels[channelName];
         if (!channel) {
-            channel = new Channel();
+            channel = new Channel(Channels, channelName);
             channels[channelName] = channel;
         }
         return channel;
@@ -86,7 +91,7 @@ var Channels = /** @class */ (function () {
         return false;
     };
     Channels.channels = [];
-    Channels.globalChannel = new Channel();
+    Channels.globalChannel = new Channel(Channels, '__GLOBAL');
     return Channels;
 }());
 

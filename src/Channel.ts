@@ -7,6 +7,14 @@ export class Channel implements IChannel {
     private static handlersById: {[key: number] : IHandler} = {};
     private static handlersByMessage: {[key: string]: IHandler[]} = {};
 
+    private readonly name;
+    private readonly Channels;
+
+    constructor(Channels, channelName) {
+        this.Channels = Channels;
+        this.name = channelName;
+    }
+
     public on(message: string, cb: ChannelCallback) {
         const handler = {
             id: Channel.handlerIdCpt++,
@@ -27,7 +35,7 @@ export class Channel implements IChannel {
     }
 
     public emit(message: string, data: any) {
-        let handlers = Channel.handlersByMessage[message];
+        const handlers = Channel.handlersByMessage[message];
 
         if (handlers != null) {
             for (let i = 0; i < handlers.length; i++) {
@@ -55,5 +63,9 @@ export class Channel implements IChannel {
         }
 
         return false;
+    }
+
+    public remove() {
+        return this.Channels.remove(this.name);
     }
 }
