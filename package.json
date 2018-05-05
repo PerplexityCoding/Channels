@@ -2,7 +2,7 @@
   "name": "channels",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/bundle.js",
   "module": "src/Channels.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
