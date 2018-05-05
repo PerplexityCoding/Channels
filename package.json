@@ -1,0 +1,24 @@
+{
+  "name": "channels",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "src/Channels.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "build:test": "rollup -c rollup-test.config.js",
+    "test": "npm run build:test && jest -c --coverage"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "jest": "^22.4.3",
+    "rollup": "^0.58.2",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-uglify": "^3.0.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  }
+}

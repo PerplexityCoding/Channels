@@ -1,24 +1,24 @@
 import {Channel} from "./Channel";
-import {ChannelCallback, IChannel} from "./index.d";
+import {ChannelCallback} from "./index.d";
 
-export class Channels implements IChannel {
+export default class Channels {
 
     private static channels: Channel[] = [];
     private static globalChannel = new Channel();
 
-    public on(message: string, cb: ChannelCallback) {
-        Channels.globalChannel.on(message, cb);
+    public static on(message: string, cb: ChannelCallback) {
+        return Channels.globalChannel.on(message, cb);
     }
 
-    public emit(message: string, data: any) {
-        Channels.globalChannel.emit(message, data);
+    public static emit(message: string, data: any) {
+        return Channels.globalChannel.emit(message, data);
     }
 
-    public off(handlerId: number) {
-        Channels.globalChannel.off(handlerId);
+    public static off(handlerId: number) {
+        return Channels.globalChannel.off(handlerId);
     }
 
-    public get(channelName: string) {
+    public static get(channelName: string) {
         const channels = Channels.channels;
 
         let channel = channels[channelName];
@@ -28,5 +28,18 @@ export class Channels implements IChannel {
         }
 
         return channel;
+    }
+
+    public static remove(channelName: string) {
+        const channels = Channels.channels;
+
+        let channel = channels[channelName];
+
+        if (channel) {
+            delete channels[channelName];
+            return true;
+        }
+
+        return false;
     }
 }

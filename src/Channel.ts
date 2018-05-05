@@ -30,23 +30,28 @@ export class Channel implements IChannel {
         let handlers = Channel.handlersByMessage[message];
 
         if (handlers != null) {
-            for (let i = 0, len = handlers.length; i < len; i++) {
+            for (let i = 0; i < handlers.length; i++) {
                 const handlerId = handlers[i];
 
                 const handler = Channel.handlersById[handlerId];
                 if (handler) {
                     handler.cb(data);
                 } else {
-                    delete handlers[i];
+                    handlers.splice(i, 1);
                     i--;
                 }
             }
         }
+
+        return handlers != null && handlers.length > 0;
     }
 
     public off(handlerId: number) {
-        if (Channel.handlersById[handlerId]) {
+        if (Channel.handlersById[handlerId] != null) {
             delete Channel.handlersById[handlerId];
+            return true;
         }
+
+        return false;
     }
 }
