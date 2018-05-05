@@ -20,16 +20,24 @@ var Channel = /** @class */ (function () {
     Channel.prototype.emit = function (message, data) {
         var handlers = Channel.handlersByMessage[message];
         if (handlers != null) {
-            for (var i = 0; i < handlers.length; i++) {
+            var _loop_1 = function (i) {
                 var handlerId = handlers[i];
                 var handler = Channel.handlersById[handlerId];
                 if (handler) {
-                    handler.cb(data);
+                    setTimeout(function () {
+                        handler.cb(data);
+                    }, 0);
                 }
                 else {
                     handlers.splice(i, 1);
                     i--;
                 }
+                out_i_1 = i;
+            };
+            var out_i_1;
+            for (var i = 0; i < handlers.length; i++) {
+                _loop_1(i);
+                i = out_i_1;
             }
         }
         return handlers != null && handlers.length > 0;

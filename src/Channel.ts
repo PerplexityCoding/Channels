@@ -35,7 +35,9 @@ export class Channel implements IChannel {
 
                 const handler = Channel.handlersById[handlerId];
                 if (handler) {
-                    handler.cb(data);
+                    setTimeout(() => { // No body expect emit to be call synchronously
+                        handler.cb(data);
+                    }, 0)
                 } else {
                     handlers.splice(i, 1);
                     i--;
