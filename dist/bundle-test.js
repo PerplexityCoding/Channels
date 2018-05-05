@@ -2,6 +2,8 @@
 
 var Channel = /** @class */ (function () {
     function Channel(Channels, channelName) {
+        this.handlersById = {};
+        this.handlersByMessage = {};
         this.Channels = Channels;
         this.name = channelName;
     }
@@ -10,43 +12,39 @@ var Channel = /** @class */ (function () {
             id: Channel.handlerIdCpt++,
             cb: cb
         };
-        Channel.handlersById[handler.id] = handler;
-        var handlers = Channel.handlersByMessage[message];
+        this.handlersById[handler.id] = handler;
+        var handlers = this.handlersByMessage[message];
         if (!handlers) {
             handlers = [];
-            Channel.handlersByMessage[message] = handlers;
+            this.handlersByMessage[message] = handlers;
         }
         handlers.push(handler.id);
         return handler.id;
     };
     Channel.prototype.emit = function (message, data) {
-        var handlers = Channel.handlersByMessage[message];
+        var handlers = this.handlersByMessage[message];
         if (handlers != null) {
-            var _loop_1 = function (i) {
+            for (var i = 0; i < handlers.length; i++) {
                 var handlerId = handlers[i];
-                var handler = Channel.handlersById[handlerId];
+                var handler = this.handlersById[handlerId];
                 if (handler) {
-                    setTimeout(function () {
-                        handler.cb(data);
-                    }, 0);
+                    (function (handler) {
+                        setTimeout(function () {
+                            handler.cb(data);
+                        }, 0);
+                    })(handler);
                 }
                 else {
                     handlers.splice(i, 1);
                     i--;
                 }
-                out_i_1 = i;
-            };
-            var out_i_1;
-            for (var i = 0; i < handlers.length; i++) {
-                _loop_1(i);
-                i = out_i_1;
             }
         }
         return handlers != null && handlers.length > 0;
     };
     Channel.prototype.off = function (handlerId) {
-        if (Channel.handlersById[handlerId] != null) {
-            delete Channel.handlersById[handlerId];
+        if (this.handlersById[handlerId] != null) {
+            delete this.handlersById[handlerId];
             return true;
         }
         return false;
@@ -55,8 +53,6 @@ var Channel = /** @class */ (function () {
         return this.Channels.remove(this.name);
     };
     Channel.handlerIdCpt = 0;
-    Channel.handlersById = {};
-    Channel.handlersByMessage = {};
     return Channel;
 }());
 

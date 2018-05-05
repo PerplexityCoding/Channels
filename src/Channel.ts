@@ -4,9 +4,8 @@ export class Channel implements IChannel {
 
     private static handlerIdCpt = 0;
 
-    private static handlersById: {[key: number] : IHandler} = {};
-    private static handlersByMessage: {[key: string]: IHandler[]} = {};
-
+    private readonly handlersById: {[key: number] : IHandler} = {};
+    private readonly handlersByMessage: {[key: string]: IHandler[]} = {};
     private readonly name;
     private readonly Channels;
 
@@ -21,12 +20,12 @@ export class Channel implements IChannel {
             cb: cb
         };
 
-        Channel.handlersById[handler.id] = handler;
+        this.handlersById[handler.id] = handler;
 
-        let handlers = Channel.handlersByMessage[message];
+        let handlers = this.handlersByMessage[message];
         if (! handlers) {
             handlers = [];
-            Channel.handlersByMessage[message] = handlers;
+            this.handlersByMessage[message] = handlers;
         }
 
         handlers.push(handler.id);
@@ -35,17 +34,19 @@ export class Channel implements IChannel {
     }
 
     public emit(message: string, data: any) {
-        const handlers = Channel.handlersByMessage[message];
+        const handlers = this.handlersByMessage[message];
 
         if (handlers != null) {
             for (let i = 0; i < handlers.length; i++) {
                 const handlerId = handlers[i];
 
-                const handler = Channel.handlersById[handlerId];
+                const handler = this.handlersById[handlerId];
                 if (handler) {
-                    setTimeout(() => { // No body expect emit to be call synchronously
-                        handler.cb(data);
-                    }, 0)
+                    ((handler) => { // No body expect emit to be call synchronously
+                        setTimeout(() => {
+                            handler.cb(data);
+                        }, 0)
+                    })(handler);
                 } else {
                     handlers.splice(i, 1);
                     i--;
@@ -57,8 +58,8 @@ export class Channel implements IChannel {
     }
 
     public off(handlerId: number) {
-        if (Channel.handlersById[handlerId] != null) {
-            delete Channel.handlersById[handlerId];
+        if (this.handlersById[handlerId] != null) {
+            delete this.handlersById[handlerId];
             return true;
         }
 
